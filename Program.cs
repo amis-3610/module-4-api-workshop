@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Api.Workshop.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Add the database access dependency to the container
+builder.Services.AddDbContext<RegistrarContext>(opt =>
+    opt.UseInMemoryDatabase("Registrar"));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
