@@ -1,5 +1,8 @@
+
+using Microsoft.EntityFrameworkCore;
 namespace Api.Workshop.Models
 {
+    [Owned]
     public record Address
     {
         public string? Street1 { get; set; }

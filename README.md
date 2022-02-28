@@ -38,3 +38,19 @@ We need to add support for a local database to solve for the stateless issue. We
 ### Create the Models
 
 We begin by creating the models of our business entities. This is usually done with business subject matter experts as well as teams that will consume our API
+
+### Create the Database Context
+
+We will not spend time here- this is Wednesday lecture.
+
+### Add Tools to generate a controller
+
+1. Add the following Nuget packages:
+   - `dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design`
+   - `dotnet add package Microsoft.EntityFrameworkCore.Design`
+   - `dotnet add package Microsoft.EntityFrameworkCore.SqlServer`
+   - `dotnet tool install -g dotnet-aspnet-codegenerator`
+
+### Generate Controller including database queries
+
+1. Then generate a CoursesController based on the model: -`dotnet aspnet-codegenerator controller -name CoursesController -async -api -m Course -dc RegistrarContext -outDir Controllers`
