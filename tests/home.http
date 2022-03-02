@@ -1,0 +1,5 @@
+### Sent GET request to the home ('root') of the API
+GET https://localhost:5001/ HTTP/1.1
+
+### Sent GET request to the home ('root') of the API
+POST  https://localhost:5001/ HTTP/1.1

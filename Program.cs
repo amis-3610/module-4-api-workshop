@@ -1,6 +1,28 @@
+using Microsoft.EntityFrameworkCore;
+using Api.Workshop.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+// Add the database access dependency to the container
+builder.Services.AddDbContext<RegistrarContext>(opt =>
+    opt.UseInMemoryDatabase("Registrar"));
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+// Configure the middleware pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
