@@ -1,4 +1,6 @@
+#nullable disable
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Api.Workshop.Models;
 
 namespace Api.Workshop.Controllers
@@ -7,24 +9,24 @@ namespace Api.Workshop.Controllers
     [Route("/students")]
     public class StudentsController : ControllerBase
     {
-        // create a simple hard-coded array of students
-        private List<Student> students = new List<Student>()
-            {
-                new Student{Id = 1, Name = "Tony Stark"},
-                new Student{Id = 2, Name = "Bruce Banner"},
-                new Student{Id = 3, Name = "Natasha Romanoff"}
-            };         
-            
+
+        private readonly RegistrarContext _context;
+
+        public StudentsController(RegistrarContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(students);
+            return Ok(_context.Students);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var student = students.FirstOrDefault(x => x.Id == id);
+            var student = _context.Students.Find(id);
 
             if (student == null )
             {
@@ -37,19 +39,40 @@ namespace Api.Workshop.Controllers
         [HttpPost]
         public IActionResult Post(Student student)
         {
-            if (student == null)
+            _context.Students.Add(student);
+            _context.SaveChanges();
+
+            return CreatedAtAction("GetById", new { id = student.Id }, student);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Student student)
+        {
+            if (id != student.Id)
+            { return BadRequest(); }
+
+            _context.Entry(student).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+            try
             {
-                return BadRequest();
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Students.Any(x => x.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    // rethrow the error, let middlware handle
+                    throw;
+                }
             }
 
-            // create the id
-            var id = students.Max(x => x.Id) + 1;
-            student.Id = id;
-            students.Add(student);
-
-            return Ok(student);
-
+            return NoContent();
         }
+
 
     }
 }
